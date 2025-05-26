@@ -1,5 +1,6 @@
 package test;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -7,6 +8,7 @@ import java.util.Optional;
 
 @Getter
 @Setter
+@EqualsAndHashCode
 public class SeatInfo {
   private long id;
   private String sector;
@@ -19,8 +21,7 @@ public class SeatInfo {
   private final String fullRow;
   private final String fullSeat;
 
-  public SeatInfo(long id, String sector, String sectorName, String row,
-                  String rowName, String seat, String seatName) {
+  public SeatInfo(long id, String sector, String sectorName, String row, String rowName, String seat, String seatName) {
     this.id = id;
     this.sector = sector;
     this.sectorName = sectorName;
@@ -28,28 +29,30 @@ public class SeatInfo {
     this.rowName = rowName;
     this.seat = seat;
     this.seatName = seatName;
-    this.fullSector = calculateFullSector();
-    this.fullRow = calculateFullRow();
-    this.fullSeat = calculateFullSeat();
+    this.fullSector = createFullSector();
+    this.fullRow = createFullRow();
+    this.fullSeat = createFullSeat();
   }
 
-  private String calculateFullSector() {
+  private String createFullSector() {
     return Optional.ofNullable(sector)
-            .flatMap(s -> Optional.ofNullable(sectorName)
-                    .filter(name -> !name.isEmpty())
-                    .map(name -> "сектор".equalsIgnoreCase(s) ? name : s + " " + name))
-            .orElse(Optional.ofNullable(sector).orElse(""));
+        .flatMap(s -> Optional.ofNullable(sectorName)
+            .filter(name -> !name.isEmpty())
+            .map(name -> "сектор".equalsIgnoreCase(s) ? name : s + " " + name))
+        .orElse(Optional.ofNullable(sector).orElse(""));
   }
 
-  private String calculateFullRow() {
+  private String createFullRow() {
     return Optional.ofNullable(row)
-            .flatMap(r -> Optional.ofNullable(rowName).map(name -> r + " " + name))
-            .orElse("");
+        .flatMap(r -> Optional.ofNullable(rowName)
+            .map(name -> r + " " + name))
+        .orElse("");
   }
 
-  private String calculateFullSeat() {
+  private String createFullSeat() {
     return Optional.ofNullable(seat)
-            .flatMap(s -> Optional.ofNullable(seatName).map(name -> s + " " + name))
-            .orElse("");
+        .flatMap(s -> Optional.ofNullable(seatName)
+            .map(name -> s + " " + name))
+        .orElse("");
   }
 }
